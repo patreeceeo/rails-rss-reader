@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :feed, :only => [:show]
+
   mount SuperfeedrEngine::Engine => SuperfeedrEngine::Engine.base_path
 
   # The priority is based upon order of creation: first created -> highest priority.
