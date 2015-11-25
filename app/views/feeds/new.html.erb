@@ -1,0 +1,7 @@
+<h1>Feed#new</h1>
+<%= form_for @feed do |f| %>
+  <%= f.label :url, "Feed URL" %>
+  <%= f.text_field :url %>
+  
+  <%= f.submit %>
+<% end %>

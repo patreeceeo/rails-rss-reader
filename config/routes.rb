@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :feed, :only => [:show]
+  resources :feeds #, :only => [:index, :show, :new, :create]
 
   mount SuperfeedrEngine::Engine => SuperfeedrEngine::Engine.base_path
 
