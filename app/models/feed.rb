@@ -20,7 +20,10 @@ class Feed < ActiveRecord::Base
   end
 
   def notified(params)
-    update_attributes(:status => params["status"]["http"])
+    update_attributes(
+      :status => params["status"]["http"],
+      :title => params["status"]["title"]
+    )
 
   	params['items'].each do |item|
   		entries.create(
