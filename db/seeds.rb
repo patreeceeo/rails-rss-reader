@@ -6,7 +6,7 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-feed = Feed.create(:url => "example.com")
+feed = Feed.create(:url => "http://example.com")
 
 feed.entries << Entry.create(
   :title => "Test entry"

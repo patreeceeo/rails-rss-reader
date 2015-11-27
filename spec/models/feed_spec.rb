@@ -27,13 +27,13 @@ RSpec.describe Feed, type: :model do
           {
             "id" => 1,
             "title" => "How to become a millionaire",
-            "permalinkUrl" => "money.com",
+            "permalinkUrl" => "http://money.com",
             "content" => "Yadda Yadda"
           },
           {
             "id" => 2,
             "title" => "20 reasons listicles suck",
-            "permalinkUrl" => "cats.com",
+            "permalinkUrl" => "http://cats.com",
             "content" => "Yadda Yadda"
           }
         ]

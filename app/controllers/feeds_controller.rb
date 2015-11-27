@@ -8,6 +8,14 @@ class FeedsController < ApplicationController
   end
 
   def create
-    Feed.create(:url => params[:feed][:url])
+    @feed = Feed.create(
+      :url => params[:feed][:url],
+      :title => params[:feed][:title]
+    )
+    if @feed.subscribe(SuperfeedrEngine::Engine)
+      redirect_to @feed, notice: "Success!"
+    else
+      redirect_to @feed, notice: "Failed to subscribe"
+    end
   end
 end

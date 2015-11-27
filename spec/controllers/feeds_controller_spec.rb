@@ -18,15 +18,19 @@ RSpec.describe FeedsController, type: :controller do
 
   describe "POST #create" do
     before do
-      post :create, :feed => { :url => "foo.com" }
-    end
-
-    it "returns http success" do
-      expect(response).to have_http_status(:success)
+      post :create, :feed => { :url => "http://foo.com" }
+      @feed = Feed.find_by_url("http://foo.com")
     end
 
     it "creates a new feed" do
-      expect(Feed.find_by_url("foo.com")).not_to eq nil
+      expect(@feed).not_to eq nil
+    end
+
+    it "redirects to feed#show" do
+      expect(response).to redirect_to @feed
+    end
+
+    it "subscribes to the actual feed" do
     end
   end
 end
