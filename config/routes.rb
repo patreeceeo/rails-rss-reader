@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
-  resources :feeds #, :only => [:index, :show, :new, :create]
+  resources :feeds, :only => [:show, :new, :create]
+
+  namespace :api, defaults: {format: 'json'}  do
+    namespace :v1 do
+      resources :feeds, :only => [:index, :show, :create, :delete]
+      # get 'feeds/:id' => 'feeds#show'
+    end
+  end
+
 
   mount SuperfeedrEngine::Engine => SuperfeedrEngine::Engine.base_path
 

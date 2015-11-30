@@ -1,7 +1,7 @@
 require 'digest/md5'
 
 class Feed < ActiveRecord::Base
-  has_many :entries, dependent: :destroy
+  has_many :entries, :dependent => :destroy
 
   validates :url, uniqueness: true
 
@@ -9,9 +9,9 @@ class Feed < ActiveRecord::Base
     body, ok = feed_engine.subscribe(self, {:retrieve => true})
     if ok
       notified JSON.parse(body)
-      true
+      update_attributes :subscribed => true
     else
-      false
+      update_attributes :subscribed => false
     end
   end
 
