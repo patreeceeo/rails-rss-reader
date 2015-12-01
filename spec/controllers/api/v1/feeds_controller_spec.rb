@@ -34,7 +34,8 @@ describe Api::V1::FeedsController, :api => true do
         "id" => 22,
         "title" => "22 hot new hair styles for your yak",
         "status" => "mkay",
-        "url" => "http://braindumps.org"
+        "url" => "http://braindumps.org",
+        "subscribed" => true
       }
       Feed.create @feed_data
       get :show, {:id => 22}, :format => :json
@@ -51,6 +52,23 @@ describe Api::V1::FeedsController, :api => true do
     it "returns JSON representing the feed" do
       expect(response_data).to eq @feed_data
     end
+  end
 
+  describe "GET #index" do
+    before do
+      get :index
+    end
+
+    let(:response_data) do
+      JSON.parse(response.body)
+    end
+
+    it "returns http success" do
+      expect(response).to have_http_status(:success)
+    end
+
+    it "returns a list of feeds" do
+      expect(response_data).to be_an Array
+    end
   end
 end

@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   namespace :api, defaults: {format: 'json'}  do
     namespace :v1 do
       resources :feeds, :only => [:index, :show, :create, :delete]
-      # get 'feeds/:id' => 'feeds#show'
     end
   end
 
