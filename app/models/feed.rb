@@ -5,16 +5,6 @@ class Feed < ActiveRecord::Base
 
   validates :url, uniqueness: true
 
-  def subscribe(feed_engine)
-    body, ok = feed_engine.subscribe(self, {:retrieve => true})
-    if ok
-      notified JSON.parse(body)
-      update_attributes :subscribed => true
-    else
-      update_attributes :subscribed => false
-    end
-  end
-
   def secret
     Digest::MD5.hexdigest(url)
   end

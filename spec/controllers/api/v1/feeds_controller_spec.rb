@@ -1,25 +1,22 @@
 describe Api::V1::FeedsController, :api => true do
 
-  describe "POST #create" do
+  let(:response_data) do
+    JSON.parse(response.body)
+  end
+
+  describe "POST #create w: GOOD DATA" do
     before do
-      expect_any_instance_of(Feed).to receive(:subscribe) do |feed|
-        feed.update_attributes(
-          :title => "22 hot new hair styles for your yak"
-        )
-      end
+      expect(FeedHelper).to receive(:subscribe).with(instance_of(Feed))
 
       @feed_data = {
-        "url" => "http://braindumps.org"
+        "url" => "http://braindumps.org",
+        "title" => "22 hot new hairstyles for your yak"
       }
 
-      post :create, @feed_data, :format => :json
+      post :create, @feed_data
     end
 
-    let(:response_data) do
-      JSON.parse(response.body)
-    end
-
-    it "returns http success" do
+    it "returns HTTP success" do
       expect(response).to have_http_status(:success)
     end
 
@@ -28,7 +25,28 @@ describe Api::V1::FeedsController, :api => true do
     end
   end
 
-  describe "GET #show" do
+  describe "POST #create w: NO URL" do
+    before do
+      expect(FeedHelper).not_to receive(:subscribe).with(instance_of(Feed))
+      @feed_data = {
+        title: "22 hot new hairstyles for your yak"
+      }
+
+      post :create, @feed_data
+    end
+
+    it "returns HTTP not acceptable" do
+      expect(response).to have_http_status(:not_acceptable)
+    end
+
+    it "does not records the feed" do
+      expect do 
+        Feed.find(response_data["id"])
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe "GET #show w: GOOD DATA" do
     before do
       @feed_data = {
         "id" => 22,
@@ -38,14 +56,10 @@ describe Api::V1::FeedsController, :api => true do
         "subscribed" => true
       }
       Feed.create @feed_data
-      get :show, {:id => 22}, :format => :json
+      get :show, {:id => 22}
     end
 
-    let(:response_data) do
-      JSON.parse(response.body)
-    end
-
-    it "returns http success" do
+    it "returns HTTP not found" do
       expect(response).to have_http_status(:success)
     end
 
@@ -54,13 +68,35 @@ describe Api::V1::FeedsController, :api => true do
     end
   end
 
-  describe "GET #index" do
+  describe "GET #show w: BAD ID" do
     before do
-      get :index
+      @feed_data = {
+        "id" => 22,
+        "title" => "22 hot new hair styles for your yak",
+        "status" => "mkay",
+        "url" => "http://braindumps.org",
+        "subscribed" => true
+      }
+      Feed.create @feed_data
+      get :show, {:id => 11}
     end
 
-    let(:response_data) do
-      JSON.parse(response.body)
+    it "returns HTTP not found" do
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe "GET #index" do
+    before do
+      @feed_data = {
+        "id" => 22,
+        "title" => "22 hot new hair styles for your yak",
+        "status" => "mkay",
+        "url" => "http://braindumps.org",
+        "subscribed" => true
+      }
+      Feed.create @feed_data
+      get :index
     end
 
     it "returns http success" do
@@ -69,6 +105,46 @@ describe Api::V1::FeedsController, :api => true do
 
     it "returns a list of feeds" do
       expect(response_data).to be_an Array
+    end
+  end
+
+  describe "DELETE #destroy w: GOOD DATA" do
+    before do
+      expect(FeedHelper).to receive(:unsubscribe).with(instance_of(Feed))
+      @feed_data = {
+        "id" => 22,
+        "title" => "22 hot new hair styles for your yak",
+        "status" => "mkay",
+        "url" => "http://braindumps.org",
+        "subscribed" => true
+      }
+      Feed.create @feed_data
+      delete :destroy, {:id => 22}
+    end
+
+    it "erases the feed record" do
+      expect do 
+        Feed.find(22) 
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe "DELETE #destroy w: BAD ID" do
+    before do
+      expect(FeedHelper).not_to receive(:unsubscribe).with(instance_of(Feed))
+      @feed_data = {
+        "id" => 22,
+        "title" => "22 hot new hair styles for your yak",
+        "status" => "mkay",
+        "url" => "http://braindumps.org",
+        "subscribed" => true
+      }
+      Feed.create @feed_data
+      delete :destroy, {:id => 11}
+    end
+
+    it "returns HTTP not found" do
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

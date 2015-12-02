@@ -18,17 +18,39 @@ module Api
       end
 
       def show
-        render :json => _feed_hash(Feed.find(params[:id]))
+        if Feed.exists?(params[:id])
+          render :json => _feed_hash(Feed.find(params[:id]))
+        else
+          render :json => params, :status => :not_found
+        end
       end
 
       def create
-        @feed = Feed.create(
-          :url => params["url"]
-        )
+        if params["url"].nil?
+          render :json => params, :status => :not_acceptable
+        else
+          @feed = Feed.create(
+            :url => params["url"]
+          )
 
-        @feed.subscribe(SuperfeedrEngine::Engine)
+          FeedHelper.subscribe(@feed)
 
-        render :json => _feed_hash(@feed)
+          render :json => _feed_hash(@feed)
+        end
+      end
+
+      def destroy
+        if Feed.exists?(params[:id])
+          @feed = Feed.find(params[:id])
+
+          FeedHelper.unsubscribe(@feed)
+
+          @feed.destroy
+
+          render :json => _feed_hash(@feed)
+        else 
+          render :json => params, :status => :not_found
+        end
       end
     end
   end
