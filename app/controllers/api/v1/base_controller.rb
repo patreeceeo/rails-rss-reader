@@ -1,6 +1,8 @@
 module Api
-  class ApplicationController < ActionController::Metal
-    include ActionController::Rendering
-    respond_to :json
+  module V1
+    class ApplicationController < ActionController::Metal
+      include ActionController::Rendering
+      respond_to :json
+    end
   end
 end

@@ -1,6 +1,6 @@
 module Api
   module V1
-    class FeedsController < Api::ApplicationController
+    class FeedsController < ApplicationController
       def _feed_hash(feed) 
         {
           :id => feed.id,
