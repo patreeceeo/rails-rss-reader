@@ -19,7 +19,11 @@ module Api
       end
 
       def show
-        render :json => _entry_hash(Entry.find(params[:id]))
+        if Entry.exists?(params[:id])
+          render :json => _entry_hash(Entry.find(params[:id]))
+        else
+          render :json => params, :status => :not_found
+        end
       end
     end
   end 
